@@ -28,7 +28,7 @@ export class AuthService {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password + process.env.SECRET, 10);
 
     const user = await this.userModel.create({
       username,
@@ -50,7 +50,10 @@ export class AuthService {
       throw new UnauthorizedException('invalid email');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      password + process.env.SECRET,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('invalid password');
     }

@@ -13,7 +13,7 @@ export class AddressService {
   async getUserAdresses(id: string): Promise<Iaddress[] | null> {
     const user = await this.userModel.findById(id);
     if (!user) {
-      throw new UnauthorizedException('invalid id');
+      throw new UnauthorizedException('user not found');
     }
     return user.addresses;
   }
@@ -24,7 +24,7 @@ export class AddressService {
   ): Promise<{ message: string; yourAddresses: Iaddress[] }> {
     const user = await this.userModel.findById(id);
     if (!user) {
-      throw new UnauthorizedException('invalid id');
+      throw new UnauthorizedException('user not found');
     }
     if (!user.addresses.length) {
       user.addresses.push({ addressId: 1, address: address });
@@ -43,7 +43,13 @@ export class AddressService {
   ): Promise<{ message: string; yourAddresses: Iaddress[] }> {
     const user = await this.userModel.findById(id);
     if (!user) {
-      throw new UnauthorizedException('invalid id');
+      throw new UnauthorizedException('user not found');
+    }
+    const address = user.addresses.find(
+      (address) => address.addressId === addressId,
+    );
+    if (!address) {
+      throw new UnauthorizedException('invalid address id');
     }
     await this.userModel.updateOne(
       { _id: id },
