@@ -45,18 +45,9 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## POSTMAN Collection documentation
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
+- you can access the postman collection to test the APIs [by this link](https://documenter.getpostman.com/view/19876506/2s93Jow5n6#ecc6eba7-2496-4bff-8d9d-8f3633fcb6ec)
 
 ## Support
 
