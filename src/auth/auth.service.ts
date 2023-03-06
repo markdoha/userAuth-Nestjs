@@ -1,12 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
+import { User } from '../schemas/user.schema';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/signup.dto';
 import { LogInDto } from './dto/login.dto';
-import { Iuser } from './interfaces/user.interface';
 
 @Injectable()
 export class AuthService {
@@ -63,27 +62,5 @@ export class AuthService {
       { secret: process.env.JWT_SECRET },
     );
     return { message: 'login successful', token: token };
-  }
-
-  async deleteUser(
-    id: string,
-  ): Promise<{ message: string; deleted: string } | { message: string }> {
-    if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      const user = await this.userModel.findById({ _id: id });
-      if (!user) {
-        throw new UnauthorizedException('invalid id');
-      }
-      const del = await this.userModel.findByIdAndDelete({ _id: id });
-      return { message: 'user deleted', deleted: del.username };
-    }
-    return { message: 'invalid id' };
-  }
-
-  async getUser(id: string): Promise<{ user: Iuser }> {
-    const user = await this.userModel.findById(id).select('-password');
-    if (!user) {
-      throw new UnauthorizedException('user not found');
-    }
-    return { user: user };
   }
 }

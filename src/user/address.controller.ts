@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Post, Body, Param, Get, Delete } from '@nestjs/common';
+import { Post, Body, Param, Get, Delete, Put } from '@nestjs/common';
 import { AddressService } from './address.service';
 
 @Controller('address')
@@ -22,5 +22,14 @@ export class AddressController {
     @Body('addressId') addressId: number,
   ) {
     return this.addressService.deleteAddress(id, addressId);
+  }
+
+  @Put('/:id')
+  async updateAddress(
+    @Param('id') id: string,
+    @Body('addressId') addressId: number,
+    @Body('address') address: string,
+  ) {
+    return this.addressService.updateAddress(id, addressId, address);
   }
 }

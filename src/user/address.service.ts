@@ -1,8 +1,8 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
+import { User } from '../schemas/user.schema';
 import { Model } from 'mongoose';
-import { Iaddress } from './interfaces/address.interface';
+import { Iaddress } from '../interfaces/address.interface';
 
 export class AddressService {
   constructor(
@@ -57,5 +57,28 @@ export class AddressService {
     );
     const updated = await this.userModel.findById(id);
     return { message: 'address deleted', yourAddresses: updated.addresses };
+  }
+
+  async updateAddress(
+    id: string,
+    addressId: number,
+    address: string,
+  ): Promise<{ message: string; yourAddresses: Iaddress[] }> {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new UnauthorizedException('user not found');
+    }
+    const addressToUpdate = user.addresses.find(
+      (address) => address.addressId === addressId,
+    );
+    if (!addressToUpdate) {
+      throw new UnauthorizedException('invalid address id');
+    }
+    await this.userModel.updateOne(
+      { _id: id, 'addresses.addressId': addressId },
+      { $set: { 'addresses.$.address': address } },
+    );
+    const updated = await this.userModel.findById(id);
+    return { message: 'address updated', yourAddresses: updated.addresses };
   }
 }
