@@ -55,6 +55,7 @@ export class AddressService {
       { _id: id },
       { $pull: { addresses: { addressId: addressId } } },
     );
-    return { message: 'address deleted', yourAddresses: user.addresses };
+    const updated = await this.userModel.findById(id);
+    return { message: 'address deleted', yourAddresses: updated.addresses };
   }
 }
