@@ -6,6 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/signup.dto';
 import { LogInDto } from './dto/login.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private jwtService: JwtService,
+    private config: ConfigService,
   ) {}
 
   async signUp(
@@ -57,10 +59,7 @@ export class AuthService {
       throw new UnauthorizedException('invalid password');
     }
 
-    const token = this.jwtService.sign(
-      { id: user._id },
-      { secret: process.env.JWT_SECRET },
-    );
+    const token = this.jwtService.sign({ id: user._id });
     return { message: 'login successful', token: token };
   }
 }
